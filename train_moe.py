@@ -338,12 +338,12 @@ def train():
 
     # Camelidae Config
     model_config.moe_dtype = "bfloat16"
-    model_config.lora_r = 64
-    model_config.lora_alpha = 16
-    model_config.adapter_dim = 64
-    model_config.topk = 2
+    model_config.lora_r = 128
+    model_config.lora_alpha = 64
+    model_config.adapter_dim = 512
+    model_config.topk = 4
     model_config.moe_scaling = 1
-    model_config.num_experts = 8
+    model_config.num_experts = 16
     model_config.output_router_logits = False
 
     # # Seq Length Extension
@@ -352,6 +352,7 @@ def train():
     #     "factor": 2,
     # }
 
+    # 왜 bnb?
     model = LlamaForCausalLM.from_pretrained(
         model_args.model_name_or_path,
         config=model_config,
@@ -427,7 +428,7 @@ def train():
         cache_dir=training_args.cache_dir,
         model_max_length=training_args.model_max_length,
         padding_side="right",
-        use_fast=False,
+        use_fast=True,
         trust_remote_code=True,
     )
     if tokenizer.pad_token is None:
